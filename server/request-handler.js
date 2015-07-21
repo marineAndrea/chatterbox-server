@@ -32,7 +32,6 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
-  
   if (request.method === 'POST') {
     var statusCode = 201;
     response.writeHead(statusCode, 'Success');
@@ -46,9 +45,9 @@ var requestHandler = function(request, response) {
       response.end();
     })
   
-  } else if (request.method == 'GET') {
+  } else if (request.method === 'GET') {
   // The outgoing status.
-    if (request.url === '/classes/messages') {
+    if (request.url === '/classes/messages/') {
       var headers = defaultCorsHeaders;
       headers['Content-Type'] = "application/JSON";
       var statusCode = 200;

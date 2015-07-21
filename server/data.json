@@ -1,1 +1,9 @@
-{"results":[{"username":"Jono","message":"Do my bidding!"},{"username":"Jono","message":"Do my bidding!"}]}
+{
+  "results":[{
+    "username":"Marine",
+    "text":"hello",
+    "roomname":"HR"}
+
+
+    ]
+}
