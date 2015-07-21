@@ -13,7 +13,7 @@ this file and include it in basic-server.js so that it actually works.
 **************************************************************/
 
 var _ = require('underscore');
-var fs = require('fs');
+var fs = require('fs'); // because we have to write on it
 var dataBase = require('./data.json');
 
 var requestHandler = function(request, response) {
@@ -34,29 +34,32 @@ var requestHandler = function(request, response) {
   console.log("Serving request type " + request.method + " for url " + request.url);
   
   if (request.method === 'POST') {
-    console.log("POST: ");
     var statusCode = 201;
     response.writeHead(statusCode, 'Success');
     var requestBody = '';
     request.on('data', function(data) {
       requestBody += data;
     })
-    request.on('end', function(){
-      dataBase['results'].push(requestBody);
+    request.on('end', function() { // to wait for asynchronous processing
+      dataBase['results'].push(JSON.parse(requestBody));
       fs.writeFile('./server/data.json', JSON.stringify(dataBase));
       response.end();
     })
   
-  } else if (request.method == 'GET'){
+  } else if (request.method == 'GET') {
   // The outgoing status.
-    var headers = defaultCorsHeaders;
-    headers['Content-Type'] = "application/JSON";
-    var statusCode = 200;
-    response.writeHead(statusCode, headers);
-    // console.log("Database['results'][0]: "+JSON.parse(dataBase['results'][0]).username)
-    // console.log("\n\n GET REQUEST, sending back: "+JSON.stringify(dataBase))
-    response.end(JSON.stringify(JSON.parse(dataBase));
-
+    if (request.url === '/classes/messages') {
+      var headers = defaultCorsHeaders;
+      headers['Content-Type'] = "application/JSON";
+      var statusCode = 200;
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify(dataBase));
+    } else {
+      var headers = defaultCorsHeaders;
+      var statusCode = 404;
+      response.writeHead(statusCode, headers);
+      response.end('not found');
+    }
   }
   // See the note below about CORS headers.
 
