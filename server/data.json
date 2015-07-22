@@ -1,9 +1,1 @@
-{
-  "results":[{
-    "username":"Marine",
-    "text":"hello",
-    "roomname":"HR"}
-
-
-    ]
-}
+{"results":[{"username":"user","text":"hello","roomname":"Lobby"},{"username":"","text":"Let's try this again","roomname":"lobby"},{"username":"","text":"khf","roomname":"lobby"},{"username":"","text":"hey","roomname":"lobby"},{"username":"","text":"i thnk its that the POST request needs a CORS","roomname":"lobby"},{"username":"","text":"let's try this","roomname":"lobby"},{"username":"","text":"send success","roomname":"lobby"},{"username":"","text":"trying this","roomname":"Lobby"},{"username":"","text":"hello thre","roomname":"here"},{"username":"","text":"hola","roomname":"here"},{"username":"","text":"trying this thing ONE MORE TIME","roomname":"lobby"},{"username":"","text":"here we go","roomname":"lobby"}]}

@@ -15,6 +15,15 @@ this file and include it in basic-server.js so that it actually works.
 var _ = require('underscore');
 var fs = require('fs'); // because we have to write on it
 var dataBase = require('./data.json');
+var indexPage;
+fs.readFile('/Users/student/Desktop/2015-06-chatterbox-server/client/client/index.html', function(err, html) {
+  if (err) {
+    throw err;
+  } else {
+    indexPage = html;
+  }
+});
+// using fs readFile, I'd set indexpage to the index html data
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -32,31 +41,51 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
+  if (request.method === 'OPTIONS') {
+    response.writeHead(200, defaultCorsHeaders);
+    response.end();
+  }
+  // if request.url first 10 characters is '/static/''
+  //take the remaining characters, add them to this path
+  // read that file, and send that file in a response
+  // ex: GET request, url is "/static/bower_components/jquery/jquery.min.js"
+  // our handler sees "static", takes the rest of the message and calls it
+  // var path.  Add path to our absolute path, so "/Users/.../"+path
+  //fs readfile the new full path, save it to a variable, send it back as a
+  // response
   if (request.method === 'POST') {
-    var statusCode = 201;
-    response.writeHead(statusCode, 'Success');
+    response.writeHead(201, defaultCorsHeaders);
     var requestBody = '';
+
     request.on('data', function(data) {
       requestBody += data;
     })
     request.on('end', function() { // to wait for asynchronous processing
       dataBase['results'].push(JSON.parse(requestBody));
-      fs.writeFile('./server/data.json', JSON.stringify(dataBase));
+      if(__dirname.indexOf('server') !== -1) {
+        fs.writeFile('./data.json', JSON.stringify(dataBase));
+      } else {
+        fs.writeFile('./server/data.json', JSON.stringify(dataBase));
+      }
       response.end();
     })
   
   } else if (request.method === 'GET') {
   // The outgoing status.
-    if (request.url === '/classes/messages/') {
-      var headers = defaultCorsHeaders;
+    var headers = defaultCorsHeaders;
+
+    if (request.url === '/classes/messages' || request.url === '/classes/room1') {
       headers['Content-Type'] = "application/JSON";
-      var statusCode = 200;
-      response.writeHead(statusCode, headers);
+      response.writeHead(200, headers);
       response.end(JSON.stringify(dataBase));
+
+    } else if (require.url = '/') {
+      headers['Content-Type'] = "text/HTML";
+      response.writeHead(200, headers);
+      response.end(indexPage);
+
     } else {
-      var headers = defaultCorsHeaders;
-      var statusCode = 404;
-      response.writeHead(statusCode, headers);
+      response.writeHead(404, headers);
       response.end('not found');
     }
   }
@@ -93,5 +122,8 @@ var defaultCorsHeaders = {
   "access-control-allow-headers": "content-type, accept",
   "access-control-max-age": 10 // Seconds.
 };
+// module.exports = {} (exports)
+// module.exports = [Function request handler
 
-module.exports = requestHandler;
+// module.exports = {requestHandler: [Function requestHandler]}
+exports.requestHandler = requestHandler;
